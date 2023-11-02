@@ -55,12 +55,18 @@ me$name
 envelopes <- list_envelopes(me$accounts[[1]]$account_id)
 envelopes$envelopes[[1]]$status
 #> [1] "sent"
+
+folders <- list_folders(me$accounts[[1]]$account_id)
+sapply(folders$folders, \(x) x$name)
+#> [1] "Draft"         "Inbox"         "Deleted Items" "Sent Items"
 ```
 
 Current capabilities:
 
 - `get_user()` - user metadata
 - `list_envelopes` - list available envelopes
-- `list_envelope_documents` - list available documents within an
-  envelope
-- `get_envelope_document` - download a document from an envelope (PDF)
+- `list_documents` - list available documents within an envelope
+- `list_document_fields` - list available fields on a document
+- `get_document` - download a document from an envelope (PDF)
+- `list_folders` - list available folders
+- `list_folder_contents` - list content of a folder

@@ -48,7 +48,7 @@ list_envelopes <- function(
 #' @return a parsed JSON structure
 #'
 #' @export
-list_envelope_documents <- function(
+list_documents <- function(
     account_id = NULL,
     envelope_id = NULL,
     token = global_token(),
@@ -60,6 +60,34 @@ list_envelope_documents <- function(
                     base_url = base_url,
                     "restapi", "v2.1", "accounts", account_id,
                     "envelopes", envelope_id, "documents")
+  httr2::resp_body_json(httr2::req_perform(req))
+}
+
+#' List Document Fields
+#'
+#' @param account_id account id
+#' @param envelope_id envelope id
+#' @param document_id document id
+#' @param token a `httr2_token` for authentication
+#' @param base_url base URL for the query
+#'
+#' @return nothing, invisibly
+#'
+#' @export
+list_document_fields <- function(
+    account_id = NULL,
+    envelope_id = NULL,
+    document_id = NULL,
+    token = global_token(),
+    base_url = get_base_url()
+) {
+  stopifnot("account_id must not be missing" = !is.null(account_id),
+            "envelope_id must not be missing" = !is.null(envelope_id),
+            "document_id must not be missing" = !is.null(document_id))
+  req <- base_query(token = token,
+                    base_url = base_url,
+                    "restapi", "v2.1", "accounts",account_id,
+                    "envelopes", envelope_id, "documents", document_id, "fields")
   httr2::resp_body_json(httr2::req_perform(req))
 }
 
@@ -75,7 +103,7 @@ list_envelope_documents <- function(
 #' @return nothing, invisibly
 #'
 #' @export
-get_envelope_document <- function(
+get_document <- function(
   account_id = NULL,
   envelope_id = NULL,
   document_id = NULL,
@@ -94,4 +122,51 @@ get_envelope_document <- function(
   message("Writing to file: ", filename)
   writeBin(httr2::resp_body_raw(httr2::req_perform(req)), filename)
   invisible()
+}
+
+#' List Folders
+#'
+#' @param account_id account id
+#' @param token a `httr2_token` for authentication
+#' @param base_url base URL for the query
+#'
+#' @return a parsed JSON structure
+#'
+#' @export
+list_folders <- function(
+    account_id = NULL,
+    token = global_token(),
+    base_url = get_base_url()
+) {
+  stopifnot("account_id must not be missing" = !is.null(account_id))
+  req <- base_query(token = token,
+                    base_url = base_url,
+                    "restapi", "v2.1", "accounts", account_id,
+                    "folders")
+  httr2::resp_body_json(httr2::req_perform(req))
+}
+
+#' List Folder Contents
+#'
+#' @param account_id account id
+#' @param folder_id folder id
+#' @param token a `httr2_token` for authentication
+#' @param base_url base URL for the query
+#'
+#' @return a parsed JSON structure
+#'
+#' @export
+list_folder_contents <- function(
+    account_id = NULL,
+    folder_id = NULL,
+    token = global_token(),
+    base_url = get_base_url()
+) {
+  stopifnot("account_id must not be missing" = !is.null(account_id),
+            "folder_id must not be missing" = !is.null(folder_id))
+  req <- base_query(token = token,
+                    base_url = base_url,
+                    "restapi", "v2.1", "accounts", account_id,
+                    "folders", folder_id)
+  httr2::resp_body_json(httr2::req_perform(req))
 }
