@@ -63,7 +63,7 @@ sapply(folders$folders, \(x) x$name)
 
 Current capabilities:
 
-- `get_user()` - user metadata
+- `get_user` - user metadata
 - `list_envelopes` - list available envelopes
 - `list_envelope_custom_fields` - list custom fields on an envelope
 - `list_documents` - list available documents within an envelope
