@@ -80,6 +80,7 @@ Current capabilities:
 
 * `get_user()` - user metadata
 * `list_envelopes` - list available envelopes
+* `list_envelope_custom_fields` - list custom fields on an envelope
 * `list_documents` - list available documents within an envelope
 * `list_document_fields` - list available fields on a document
 * `get_document` - download a document from an envelope (PDF)

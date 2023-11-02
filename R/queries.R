@@ -63,6 +63,31 @@ list_documents <- function(
   httr2::resp_body_json(httr2::req_perform(req))
 }
 
+#' List Envelope Custom Fields
+#'
+#' @param account_id account id
+#' @param envelope_id envelope for which documents should be listed
+#' @param token a `httr2_token` for authentication
+#' @param base_url base URL for the query
+#'
+#' @return a parsed JSON structure
+#'
+#' @export
+list_envelope_custom_fields <- function(
+    account_id = NULL,
+    envelope_id = NULL,
+    token = global_token(),
+    base_url = get_base_url()
+) {
+  stopifnot("account_id must not be missing" = !is.null(account_id),
+            "envelope_id must not be missing" = !is.null(envelope_id))
+  req <- base_query(token = token,
+                    base_url = base_url,
+                    "restapi", "v2.1", "accounts", account_id,
+                    "envelopes", envelope_id, "custom_fields")
+  httr2::resp_body_json(httr2::req_perform(req))
+}
+
 #' List Document Fields
 #'
 #' @param account_id account id
