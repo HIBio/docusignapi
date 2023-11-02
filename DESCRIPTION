@@ -1,0 +1,15 @@
+Package: docusignapi
+Title: Interact with the docuSign API
+Version: 0.0.1
+Authors@R: c(
+ person("Jonathan", "Carroll", email = "jonathan@hibio.com", role = c("aut", "cre"), comment = c(ORCID = "0000-0002-1404-5264")),
+ person("Human Immunology Biosciences (HI·Bio)", role = c("cph", "fnd"))
+ )
+Description: Authenticate and interact with the docuSign API
+License: file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.2.3
+Imports: 
+    httr2,
+    magrittr
