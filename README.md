@@ -28,7 +28,7 @@ initially, this is the developer sandbox
     docuSign_integrator_key=f123abc8-4e42-1abc-92c9-0e1d233d4567
     docuSign_secret_key=f4f123d4-d5b6-4123-bf42-8492a12345e2
     docuSign_base_url=https://demo.docusign.net/
-    docuSign_dmeo=TRUE
+    docuSign_demo=TRUE
 
 The secret can be created in settings for the developer account, where
 you will also need to set the redirect URI to
