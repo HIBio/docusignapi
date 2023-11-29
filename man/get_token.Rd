@@ -4,7 +4,7 @@
 \alias{get_token}
 \title{Create or refresh authorization token}
 \usage{
-get_token()
+get_token(demo = Sys.getenv("docuSign_demo"))
 }
 \value{
 a \code{httr2_token} to be used for authentication

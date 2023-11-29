@@ -5,17 +5,18 @@
 #'
 #' @return a `httr2_token` to be used for authentication
 #' @export
-get_token <- function() {
+get_token <- function(demo = Sys.getenv("docuSign_demo")) {
+  domain <- ifelse(demo, "account-d", "account")
   client <- httr2::oauth_client(
     id = Sys.getenv("docuSign_integrator_key"),
     secret = Sys.getenv("docuSign_secret_key"),
-    token_url = "https://account-d.docusign.com/oauth/token",
+    token_url = paste0("https://", domain, ".docusign.com/oauth/token"),
     name = "docusign",
     auth = "header"
   )
 
   token <- httr2::oauth_flow_auth_code(client,
-                                       auth_url = "https://account-d.docusign.com/oauth/auth",
+                                       auth_url = paste0("https://", domain, ".docusign.com/oauth/auth"),
                                        pkce = FALSE,
                                        port = 16000,
                                        scope = "signature",

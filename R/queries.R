@@ -8,8 +8,10 @@
 #' @export
 get_user <- function(
     token = global_token(),
-    base_url = "https://account-d.docusign.com/"
+    demo = Sys.getenv("docuSign_demo")
 ) {
+  domain = ifelse(demo, "account-d", "account")
+  base_url <- paste0("https://", domain, ".docusign.com/")
   req <- base_query(token = token, base_url = base_url, "oauth", "userinfo")
   httr2::resp_body_json(httr2::req_perform(req))
 }
@@ -20,6 +22,8 @@ get_user <- function(
 #' @param from_date earliest date to be searched
 #' @param token a `httr2_token` for authentication
 #' @param base_url base URL for the query
+#'
+#' Use `get_user()` to identify the relevant `account_id`
 #'
 #' @return a parsed JSON structure
 #'

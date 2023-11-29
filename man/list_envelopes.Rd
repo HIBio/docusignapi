@@ -18,7 +18,9 @@ list_envelopes(
 
 \item{token}{a \code{httr2_token} for authentication}
 
-\item{base_url}{base URL for the query}
+\item{base_url}{base URL for the query
+
+Use \code{get_user()} to identify the relevant \code{account_id}}
 }
 \value{
 a parsed JSON structure

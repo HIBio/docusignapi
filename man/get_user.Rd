@@ -4,7 +4,7 @@
 \alias{get_user}
 \title{Get a user's metadata}
 \usage{
-get_user(token = global_token(), base_url = "https://account-d.docusign.com/")
+get_user(token = global_token(), demo = Sys.getenv("docuSign_demo"))
 }
 \arguments{
 \item{token}{a \code{httr2_token} for authentication}
