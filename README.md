@@ -30,6 +30,9 @@ initially, this is the developer sandbox
     docuSign_base_url=https://demo.docusign.net/
     docuSign_demo=TRUE
 
+If you know the account ID you will always be querying, you can also set
+`docuSign_account_id` here.
+
 The secret can be created in settings for the developer account, where
 you will also need to set the redirect URI to
 “<https://localhost:16000>”.
@@ -50,18 +53,20 @@ To load a saved token into this object, use `store_token(token)`.
 
 # Example
 
-With the token available, queries can be made to the docuSign API
+With the token available, queries can be made to the docuSign API. If
+the `account_id` is not specified, either the environment variable
+`docuSign_account_id` or `get_user()` will be used.
 
 ``` r
 me <- get_user()
 me$name
 #> [1] "Service Account"
 
-envelopes <- list_envelopes(me$accounts[[1]]$account_id)
+envelopes <- list_envelopes()
 envelopes$envelopes[[1]]$status
 #> [1] "completed"
 
-folders <- list_folders(me$accounts[[1]]$account_id)
+folders <- list_folders()
 sapply(folders$folders, \(x) x$name)
 #> [1] "Draft"         "Inbox"         "Deleted Items" "Sent Items"
 ```
@@ -76,6 +81,8 @@ Current capabilities:
 - `get_document` - download a document from an envelope (PDF)
 - `list_folders` - list available folders
 - `list_folder_contents` - list content of a folder
+- `template_query` - follow a URI listed in a result,
+  e.g. “/envelopes/c01ca123-c2b2-1faa-a89f-1b2da345e678/recipients”
 
 # Promoting to Production
 
@@ -95,17 +102,19 @@ file_2_name <- "nameofsecondfile.pdf"
 library(docusignapi)
 get_token()
 me <- get_user()
-envelopes <- list_envelopes(me$accounts[[1]]$account_id)
-list_envelope_custom_fields(me$accounts[[1]]$account_id, envelopes$envelopes[[1]]$envelopeId)
-list_document_fields(me$accounts[[1]]$account_id, envelopes$envelopes[[1]]$envelopeId, 1)
-list_document_fields(me$accounts[[1]]$account_id, envelopes$envelopes[[2]]$envelopeId, 1)
-list_documents(me$accounts[[1]]$account_id, envelopes$envelopes[[1]]$envelopeId)
-list_documents(me$accounts[[1]]$account_id, envelopes$envelopes[[2]]$envelopeId)
-get_document(me$accounts[[1]]$account_id, envelopes$envelopes[[1]]$envelopeId, 1, file_1_name)
-get_document(me$accounts[[1]]$account_id, envelopes$envelopes[[2]]$envelopeId, 1, file_2_name)
-folders <- list_folders(me$accounts[[1]]$account_id)
+envelopes <- list_envelopes()
+env1 = envelopes$envelopes[[1]]$envelopeId
+env2 = envelopes$envelopes[[2]]$envelopeId
+list_envelope_custom_fields(envelope_id = env1)
+list_document_fields(envelope_id = env1, document_id = 1)
+list_document_fields(envelope_id = env2, document_id = 1)
+list_documents(envelope_id = env1)
+list_documents(envelope_id = env2)
+get_document(envelope_id = env1, document_id = 1, filename = file_1_name)
+get_document(envelope_id = env2, document_id = 1, filename = file_2_name)
+folders <- list_folders()
 sapply(folders$folders, \(x) x$name)
-list_folder_contents(me$accounts[[1]]$account_id, folders$folders[[1]]$folderId)
+list_folder_contents(folder_id = folders$folders[[1]]$folderId)
 ```
 
 Once that is successful, the app can be sent for go-live review. On

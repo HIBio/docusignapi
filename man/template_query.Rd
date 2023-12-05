@@ -21,7 +21,7 @@ template_query(
 
 \item{base_url}{base URL for the query}
 
-\item{perform}{perform the qeury?}
+\item{perform}{perform the query?}
 }
 \value{
 a parsed JSON structure, or if \code{perform} is \code{FALSE}, the request

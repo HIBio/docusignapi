@@ -4,12 +4,18 @@
 \alias{get_user}
 \title{Get a user's metadata}
 \usage{
-get_user(token = global_token(), demo = Sys.getenv("docuSign_demo"))
+get_user(
+  token = global_token(),
+  demo = Sys.getenv("docuSign_demo"),
+  overwrite_account_id = FALSE
+)
 }
 \arguments{
 \item{token}{authorization token, a \code{httr2_token}, generated with \code{get_token()}}
 
 \item{demo}{use the developer demo sandbox?}
+
+\item{overwrite_account_id}{store a new account id?}
 }
 \value{
 a parsed JSON structure

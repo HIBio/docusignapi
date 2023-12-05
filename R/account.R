@@ -2,13 +2,15 @@
 #'
 #' @param token authorization token, a `httr2_token`, generated with `get_token()`
 #' @param demo use the developer demo sandbox?
+#' @param overwrite_account_id store a new account id?
 #'
 #' @return a parsed JSON structure
 #'
 #' @export
 get_user <- function(
     token = global_token(),
-    demo = Sys.getenv("docuSign_demo")
+    demo = Sys.getenv("docuSign_demo"),
+    overwrite_account_id = FALSE
 ) {
   domain = ifelse(demo, "account-d", "account")
   base_url <- paste0("https://", domain, ".docusign.com/")
@@ -16,7 +18,7 @@ get_user <- function(
                     base_url = base_url,
                     "oauth", "userinfo")
   resp <- httr2::resp_body_json(httr2::req_perform(req))
-  store_account_id(resp$accounts[[1]]$account_id)
+  if (Sys.getenv("docuSign_account_id") == "") store_account_id(resp$accounts[[1]]$account_id)
   resp
 }
 
