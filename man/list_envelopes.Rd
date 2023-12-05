@@ -5,7 +5,7 @@
 \title{List envelopes}
 \usage{
 list_envelopes(
-  account_id = NULL,
+  account_id = get_account_id(),
   from_date = "2020-01-01",
   token = global_token(),
   base_url = get_base_url()

@@ -1,21 +1,3 @@
-#' Get a user's metadata
-#'
-#' @param token a `httr2_token` for authentication
-#' @param base_url base URL for the query
-#'
-#' @return a parsed JSON structure
-#'
-#' @export
-get_user <- function(
-    token = global_token(),
-    demo = Sys.getenv("docuSign_demo")
-) {
-  domain = ifelse(demo, "account-d", "account")
-  base_url <- paste0("https://", domain, ".docusign.com/")
-  req <- base_query(token = token, base_url = base_url, "oauth", "userinfo")
-  httr2::resp_body_json(httr2::req_perform(req))
-}
-
 #' List envelopes
 #'
 #' @param account_id account id
@@ -29,15 +11,17 @@ get_user <- function(
 #'
 #' @export
 list_envelopes <- function(
-    account_id = NULL,
+    account_id = get_account_id(),
     from_date = "2020-01-01",
     token = global_token(),
     base_url = get_base_url()
 ) {
-  stopifnot("account_id must not be missing" = !is.null(account_id),
+  stopifnot("account_id must not be missing" = !is.null(account_id) && account_id != "",
             "from_date must not be missing" = !is.null(from_date))
-  req <- base_query(token = token, base_url = base_url,
-             "restapi", "v2.1", "accounts", account_id, "envelopes") %>%
+  req <- template_query(token = token,
+                        base_url = base_url,
+                        endpoint = "envelopes",
+                        perform = FALSE) %>%
     httr2::req_url_query(from_date = from_date)
   httr2::resp_body_json(httr2::req_perform(req))
 }
@@ -53,18 +37,16 @@ list_envelopes <- function(
 #'
 #' @export
 list_documents <- function(
-    account_id = NULL,
+    account_id = get_account_id(),
     envelope_id = NULL,
     token = global_token(),
     base_url = get_base_url()
 ) {
-  stopifnot("account_id must not be missing" = !is.null(account_id),
+  stopifnot("account_id must not be missing" = !is.null(account_id) && account_id != "",
             "envelope_id must not be missing" = !is.null(envelope_id))
-  req <- base_query(token = token,
-                    base_url = base_url,
-                    "restapi", "v2.1", "accounts", account_id,
-                    "envelopes", envelope_id, "documents")
-  httr2::resp_body_json(httr2::req_perform(req))
+  template_query(token = token,
+                 base_url = base_url,
+                 endpoint = c("envelopes", envelope_id, "documents"))
 }
 
 #' List Envelope Custom Fields
@@ -78,18 +60,16 @@ list_documents <- function(
 #'
 #' @export
 list_envelope_custom_fields <- function(
-    account_id = NULL,
+    account_id = get_account_id(),
     envelope_id = NULL,
     token = global_token(),
     base_url = get_base_url()
 ) {
-  stopifnot("account_id must not be missing" = !is.null(account_id),
+  stopifnot("account_id must not be missing" = !is.null(account_id) && account_id != "",
             "envelope_id must not be missing" = !is.null(envelope_id))
-  req <- base_query(token = token,
-                    base_url = base_url,
-                    "restapi", "v2.1", "accounts", account_id,
-                    "envelopes", envelope_id, "custom_fields")
-  httr2::resp_body_json(httr2::req_perform(req))
+  template_query(token = token,
+                 base_url = base_url,
+                 endpoint = c("envelopes", envelope_id, "custom_fields"))
 }
 
 #' List Document Fields
@@ -104,20 +84,18 @@ list_envelope_custom_fields <- function(
 #'
 #' @export
 list_document_fields <- function(
-    account_id = NULL,
+    account_id = get_account_id(),
     envelope_id = NULL,
     document_id = NULL,
     token = global_token(),
     base_url = get_base_url()
 ) {
-  stopifnot("account_id must not be missing" = !is.null(account_id),
+  stopifnot("account_id must not be missing" = !is.null(account_id) && account_id != "",
             "envelope_id must not be missing" = !is.null(envelope_id),
             "document_id must not be missing" = !is.null(document_id))
-  req <- base_query(token = token,
-                    base_url = base_url,
-                    "restapi", "v2.1", "accounts",account_id,
-                    "envelopes", envelope_id, "documents", document_id, "fields")
-  httr2::resp_body_json(httr2::req_perform(req))
+  template_query(token = token,
+                 base_url = base_url,
+                 endpoint = c("envelopes", envelope_id, "documents", document_id, "fields"))
 }
 
 #' Download a Document from an Envelope
@@ -133,21 +111,21 @@ list_document_fields <- function(
 #'
 #' @export
 get_document <- function(
-  account_id = NULL,
+  account_id = get_account_id(),
   envelope_id = NULL,
   document_id = NULL,
   filename = NULL,
   token = global_token(),
   base_url = get_base_url()
 ) {
-  stopifnot("account_id must not be missing" = !is.null(account_id),
+  stopifnot("account_id must not be missing" = !is.null(account_id) && account_id != "",
             "envelope_id must not be missing" = !is.null(envelope_id),
             "document_id must not be missing" = !is.null(document_id),
             "filename must not be missing" = !is.null(filename))
-  req <- base_query(token = token,
-                    base_url = base_url,
-                    "restapi", "v2.1", "accounts",account_id,
-                    "envelopes", envelope_id, "documents", document_id)
+  req <- template_query(token = token,
+                        base_url = base_url,
+                        endpoint = c("envelopes", envelope_id, "documents", document_id),
+                        perform = FALSE)
   message("Writing to file: ", filename)
   writeBin(httr2::resp_body_raw(httr2::req_perform(req)), filename)
   invisible()
@@ -163,16 +141,14 @@ get_document <- function(
 #'
 #' @export
 list_folders <- function(
-    account_id = NULL,
+    account_id = get_account_id(),
     token = global_token(),
     base_url = get_base_url()
 ) {
-  stopifnot("account_id must not be missing" = !is.null(account_id))
-  req <- base_query(token = token,
-                    base_url = base_url,
-                    "restapi", "v2.1", "accounts", account_id,
-                    "folders")
-  httr2::resp_body_json(httr2::req_perform(req))
+  stopifnot("account_id must not be missing" = !is.null(account_id) && account_id != "")
+  template_query(token = token,
+                 base_url = base_url,
+                 endpoint = "folders")
 }
 
 #' List Folder Contents
@@ -186,16 +162,42 @@ list_folders <- function(
 #'
 #' @export
 list_folder_contents <- function(
-    account_id = NULL,
+    account_id = get_account_id(),
     folder_id = NULL,
     token = global_token(),
     base_url = get_base_url()
 ) {
-  stopifnot("account_id must not be missing" = !is.null(account_id),
+  stopifnot("account_id must not be missing" = !is.null(account_id) && account_id != "",
             "folder_id must not be missing" = !is.null(folder_id))
+  template_query(token = token,
+                 base_url = base_url,
+                 endpoint = c("folders", folder_id))
+}
+
+#' Templated Query
+#'
+#' @param endpoint endpoint to query, e.g. "envelopes" or a field URI
+#' @param account_id account id
+#' @param token a `httr2_token` for authentication
+#' @param base_url base URL for the query
+#' @param perform perform the query?
+#'
+#' @return a parsed JSON structure, or if `perform` is `FALSE`, the request
+#'
+#' @export
+template_query <- function(endpoint = "",
+                           account_id = get_account_id(),
+                           token = global_token(),
+                           base_url = get_base_url(),
+                           perform = TRUE) {
+  stopifnot("account_id must not be missing" = !is.null(account_id) && account_id != "")
+  if (length(endpoint) > 1) {
+    endpoint <- paste(endpoint, collapse = "/")
+  }
   req <- base_query(token = token,
                     base_url = base_url,
                     "restapi", "v2.1", "accounts", account_id,
-                    "folders", folder_id)
+                    endpoint)
+  if (!perform) return(req)
   httr2::resp_body_json(httr2::req_perform(req))
 }

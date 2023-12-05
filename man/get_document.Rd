@@ -5,7 +5,7 @@
 \title{Download a Document from an Envelope}
 \usage{
 get_document(
-  account_id = NULL,
+  account_id = get_account_id(),
   envelope_id = NULL,
   document_id = NULL,
   filename = NULL,

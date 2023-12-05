@@ -5,7 +5,7 @@
 \title{List Envelope Documents}
 \usage{
 list_documents(
-  account_id = NULL,
+  account_id = get_account_id(),
   envelope_id = NULL,
   token = global_token(),
   base_url = get_base_url()

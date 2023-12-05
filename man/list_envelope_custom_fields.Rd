@@ -5,7 +5,7 @@
 \title{List Envelope Custom Fields}
 \usage{
 list_envelope_custom_fields(
-  account_id = NULL,
+  account_id = get_account_id(),
   envelope_id = NULL,
   token = global_token(),
   base_url = get_base_url()

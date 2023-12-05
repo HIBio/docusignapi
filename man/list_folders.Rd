@@ -5,7 +5,7 @@
 \title{List Folders}
 \usage{
 list_folders(
-  account_id = NULL,
+  account_id = get_account_id(),
   token = global_token(),
   base_url = get_base_url()
 )

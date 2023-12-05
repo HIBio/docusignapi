@@ -5,7 +5,7 @@
 \title{List Document Fields}
 \usage{
 list_document_fields(
-  account_id = NULL,
+  account_id = get_account_id(),
   envelope_id = NULL,
   document_id = NULL,
   token = global_token(),
