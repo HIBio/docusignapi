@@ -1,3 +1,7 @@
+#' Get Base URL for queries
+#'
+#' @return base URL from environment
+#' @export
 get_base_url <- function() {
   Sys.getenv("docuSign_base_url")
 }
@@ -5,6 +9,7 @@ get_base_url <- function() {
 #' Base query to docusign
 #'
 #' @param token authorization token, a `httr2_token`, generated with `get_token()`
+#' @param base_url base URL for queries
 #' @param ... additional paths to append via `req_url_path_append()`
 #'
 #' @return the JSON response from the query

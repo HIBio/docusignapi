@@ -6,6 +6,9 @@
 \usage{
 get_token(demo = Sys.getenv("docuSign_demo"))
 }
+\arguments{
+\item{demo}{use the developer demo sandbox?}
+}
 \value{
 a \code{httr2_token} to be used for authentication
 }

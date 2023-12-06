@@ -3,6 +3,8 @@
 #' A copy of the token is stored in `.GlobalEnv` as `.docusign_token`
 #' and is searched for when required
 #'
+#' @param demo use the developer demo sandbox?
+#'
 #' @return a `httr2_token` to be used for authentication
 #' @export
 get_token <- function(demo = Sys.getenv("docuSign_demo")) {
@@ -30,8 +32,8 @@ get_token <- function(demo = Sys.getenv("docuSign_demo")) {
 #'
 #' @export
 global_token <- function() {
-  if (exists(".docusign_token", envir = .GlobalEnv)) {
-    return(get(".docusign_token", envir = .GlobalEnv))
+  if (exists(".docusign_token", envir = docusign_env)) {
+    return(get(".docusign_token", envir = docusign_env))
   }
   stop("No global authentication token found - perhaps you need to run `get_token()`?")
 }
@@ -45,7 +47,11 @@ global_token <- function() {
 #' @export
 store_token <- function(token = NULL) {
   stopifnot("token must be provided" = !is.null(token))
-  message("Storing token in .GlobalEnv as .docusign_token")
-  assign(".docusign_token", token, envir = .GlobalEnv)
+  message("Storing token in docusign_env as .docusign_token")
+  assign(".docusign_token", token, envir = docusign_env)
   invisible()
 }
+
+#' Environment for storing auth token
+#' @export
+docusign_env <- new.env()

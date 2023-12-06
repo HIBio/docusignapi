@@ -2,7 +2,9 @@
 
 export("%>%")
 export(base_query)
+export(docusign_env)
 export(get_account_id)
+export(get_base_url)
 export(get_document)
 export(get_token)
 export(get_user)

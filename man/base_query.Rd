@@ -9,6 +9,8 @@ base_query(token = global_token(), base_url = get_base_url(), ...)
 \arguments{
 \item{token}{authorization token, a \code{httr2_token}, generated with \code{get_token()}}
 
+\item{base_url}{base URL for queries}
+
 \item{...}{additional paths to append via \code{req_url_path_append()}}
 }
 \value{

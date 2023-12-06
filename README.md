@@ -40,8 +40,8 @@ you will also need to set the redirect URI to
 # Authentication
 
 Running `get_token()` will authenticate via a browser and save the token
-as `.docusign_token` in the global environment. This will be used for
-all queries.
+as `.docusign_token` in the package-supplied environment `docusign_env`.
+This will be used for all queries.
 
 ``` r
 library(docusignapi)

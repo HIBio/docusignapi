@@ -55,11 +55,12 @@ need to set the redirect URI to "https://localhost:16000".
 # Authentication
 
 Running `get_token()` will authenticate via a browser and save the token as
-`.docusign_token` in the global environment. This will be used for all queries.
+`.docusign_token` in the package-supplied environment `docusign_env`. This will
+be used for all queries.
 
 ```{r, include = FALSE}
 library(docusignapi)
-saveRDS(.docusign_token, "token.rds")
+# saveRDS(docusign_env$.docusign_token, file = "token.rds")
 store_token(readRDS("token.rds"))
 ```
 
