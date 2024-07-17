@@ -20,7 +20,10 @@ list_envelopes(
 
 \item{base_url}{base URL for the query
 
-Use \code{get_user()} to identify the relevant \code{account_id}}
+Use \code{get_user()} to identify the relevant \code{account_id}.
+
+This function will paginate results if there are more
+than 1000 envelopes to be fetched.}
 }
 \value{
 a parsed JSON structure

@@ -29,7 +29,10 @@ list_users <- function(
 #' @param token a `httr2_token` for authentication
 #' @param base_url base URL for the query
 #'
-#' Use `get_user()` to identify the relevant `account_id`
+#' Use `get_user()` to identify the relevant `account_id`.
+#'
+#' This function will paginate results if there are more
+#' than 1000 envelopes to be fetched.
 #'
 #' @return a parsed JSON structure
 #'
@@ -48,7 +51,17 @@ list_envelopes <- function(
                         endpoint = "envelopes",
                         perform = FALSE) %>%
     httr2::req_url_query(from_date = from_date)
-  httr2::resp_body_json(httr2::req_perform(req))
+  it_resp <- httr2::req_perform_iterative(req,
+                                          httr2::iterate_with_offset(
+                                            param_name = "start_position",
+                                            start = 0,
+                                            offset = 1000,
+                                            resp_complete = resp_complete
+                                          ))
+  all_res <- do.call(c, purrr::map(it_resp, ~httr2::resp_body_json(.x)$envelopes))
+  last_res <- httr2::resp_body_json(it_resp[[length(it_resp)]])
+  last_res$envelopes <- all_res
+  last_res
 }
 
 #' List Envelope Documents
@@ -243,4 +256,8 @@ template_query <- function(endpoint = "",
                     endpoint)
   if (!perform) return(req)
   httr2::resp_body_json(httr2::req_perform(req))
+}
+
+resp_complete <- function(resp) {
+  httr2::resp_body_json(resp)$nextUri == ""
 }
