@@ -7,7 +7,7 @@
 #'
 #' @return a `httr2_token` to be used for authentication
 #' @export
-get_token <- function(demo = Sys.getenv("docuSign_demo")) {
+get_token <- function(demo = Sys.getenv("docuSign_demo"), scope = "signature") {
   domain <- ifelse(demo, "account-d", "account")
   client <- httr2::oauth_client(
     id = Sys.getenv("docuSign_integrator_key"),
@@ -21,7 +21,7 @@ get_token <- function(demo = Sys.getenv("docuSign_demo")) {
                                        auth_url = paste0("https://", domain, ".docusign.com/oauth/auth"),
                                        pkce = FALSE,
                                        port = 16000,
-                                       scope = "signature",
+                                       scope = paste(scope, collapse = " "),
                                        token_params = list(grant_type = "authorization_code")
   )
   store_token(token)

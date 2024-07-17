@@ -47,7 +47,7 @@ get_account_id <- function(token = global_token(),
 #' @export
 store_account_id <- function(aid, overwrite = FALSE) {
   existing_aid <- Sys.getenv("docuSign_account_id")
-  if (!is.null(existing_aid) && existing_aid != "") {
+  if (!is.null(existing_aid) && existing_aid != "" && existing_aid != aid) {
     if (overwrite) {
       Sys.setenv(docuSign_account_id = aid)
     } else {

@@ -4,7 +4,7 @@
 \alias{get_token}
 \title{Create or refresh authorization token}
 \usage{
-get_token(demo = Sys.getenv("docuSign_demo"))
+get_token(demo = Sys.getenv("docuSign_demo"), scope = "signature")
 }
 \arguments{
 \item{demo}{use the developer demo sandbox?}

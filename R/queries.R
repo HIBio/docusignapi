@@ -1,3 +1,27 @@
+#' List users
+#'
+#' @param account_id account id
+#' @param token a `httr2_token` for authentication
+#' @param base_url base URL for the query
+#'
+#' Use `get_user()` to identify the relevant `account_id`
+#'
+#' @return a parsed JSON structure
+#'
+#' @export
+list_users <- function(
+    account_id = get_account_id(),
+    token = global_token(),
+    base_url = get_base_url()
+) {
+  stopifnot("account_id must not be missing" = !is.null(account_id) && account_id != "")
+  req <- template_query(token = token,
+                        account_id = account_id,
+                        base_url = base_url,
+                        endpoint = "users")
+}
+
+
 #' List envelopes
 #'
 #' @param account_id account id
@@ -19,6 +43,7 @@ list_envelopes <- function(
   stopifnot("account_id must not be missing" = !is.null(account_id) && account_id != "",
             "from_date must not be missing" = !is.null(from_date))
   req <- template_query(token = token,
+                        account_id = account_id,
                         base_url = base_url,
                         endpoint = "envelopes",
                         perform = FALSE) %>%
@@ -45,6 +70,7 @@ list_documents <- function(
   stopifnot("account_id must not be missing" = !is.null(account_id) && account_id != "",
             "envelope_id must not be missing" = !is.null(envelope_id))
   template_query(token = token,
+                 account_id = account_id,
                  base_url = base_url,
                  endpoint = c("envelopes", envelope_id, "documents"))
 }
@@ -68,6 +94,7 @@ list_envelope_custom_fields <- function(
   stopifnot("account_id must not be missing" = !is.null(account_id) && account_id != "",
             "envelope_id must not be missing" = !is.null(envelope_id))
   template_query(token = token,
+                 account_id = account_id,
                  base_url = base_url,
                  endpoint = c("envelopes", envelope_id, "custom_fields"))
 }
@@ -94,6 +121,7 @@ list_document_fields <- function(
             "envelope_id must not be missing" = !is.null(envelope_id),
             "document_id must not be missing" = !is.null(document_id))
   template_query(token = token,
+                 account_id = account_id,
                  base_url = base_url,
                  endpoint = c("envelopes", envelope_id, "documents", document_id, "fields"))
 }
@@ -123,6 +151,7 @@ get_document <- function(
             "document_id must not be missing" = !is.null(document_id),
             "filename must not be missing" = !is.null(filename))
   req <- template_query(token = token,
+                        account_id = account_id,
                         base_url = base_url,
                         endpoint = c("envelopes", envelope_id, "documents", document_id),
                         perform = FALSE)
@@ -136,6 +165,8 @@ get_document <- function(
 #' @param account_id account id
 #' @param token a `httr2_token` for authentication
 #' @param base_url base URL for the query
+#' @param full_depth Logical. Use `TRUE` for a
+#'   complete listing
 #'
 #' @return a parsed JSON structure
 #'
@@ -143,12 +174,20 @@ get_document <- function(
 list_folders <- function(
     account_id = get_account_id(),
     token = global_token(),
-    base_url = get_base_url()
+    base_url = get_base_url(),
+    full_depth = FALSE
 ) {
   stopifnot("account_id must not be missing" = !is.null(account_id) && account_id != "")
-  template_query(token = token,
-                 base_url = base_url,
-                 endpoint = "folders")
+  req <- template_query(token = token,
+                        account_id = account_id,
+                        base_url = base_url,
+                        endpoint = "folders",
+                        perform = FALSE)
+  if (full_depth) {
+    req <- httr2::req_url_query(req, sub_folder_depth = -1)
+  }
+  req <- httr2::req_url_query(req, include_items = "true")
+  httr2::resp_body_json(httr2::req_perform(req))
 }
 
 #' List Folder Contents
@@ -169,9 +208,13 @@ list_folder_contents <- function(
 ) {
   stopifnot("account_id must not be missing" = !is.null(account_id) && account_id != "",
             "folder_id must not be missing" = !is.null(folder_id))
-  template_query(token = token,
+  req <- template_query(token = token,
+                 account_id = account_id,
                  base_url = base_url,
-                 endpoint = c("folders", folder_id))
+                 endpoint = c("folders", folder_id),
+                 perform = FALSE)
+  req <- httr2::req_url_query(req, include_items = "true")
+  httr2::resp_body_json(httr2::req_perform(req))
 }
 
 #' Templated Query

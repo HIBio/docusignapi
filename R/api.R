@@ -19,3 +19,11 @@ base_query <- function(token = global_token(), base_url = get_base_url(),...) {
     httr2::req_url_path_append(...) %>%
     httr2::req_auth_bearer_token(token$access_token)
 }
+
+#' @export
+logout <- function(demo=Sys.getenv("docuSign_demo")) {
+  intid = Sys.getenv("docuSign_integrator_key")
+  domain <- ifelse(demo, "account-d", "account")
+  browseURL(paste0("https://", domain, ".docusign.com/logout?client_id=", intid, "&response_type=code"))
+  invisible()
+}
