@@ -255,9 +255,23 @@ template_query <- function(endpoint = "",
                     "restapi", "v2.1", "accounts", account_id,
                     endpoint)
   if (!perform) return(req)
-  httr2::resp_body_json(httr2::req_perform(req))
+  single_res <- httr2::resp_body_json(httr2::req_perform(req))
+  if (single_res$totalSetSize == single_res$resultSetSize) return(single_res)
+
+  it_resp <- httr2::req_perform_iterative(req,
+                                          httr2::iterate_with_offset(
+                                            param_name = "start_position",
+                                            start = 0,
+                                            offset = as.integer(single_res$resultSetSize),
+                                            resp_complete = resp_complete
+                                          ))
+  all_res <- do.call(c, purrr::map(it_resp, ~httr2::resp_body_json(.x)[[endpoint]]))
+  last_res <- httr2::resp_body_json(it_resp[[length(it_resp)]])
+  last_res[[endpoint]] <- all_res
+  last_res
 }
 
 resp_complete <- function(resp) {
-  httr2::resp_body_json(resp)$nextUri == ""
+  resp_body <- httr2::resp_body_json(resp)
+  (!utils::hasName(resp_body, "nextUri")) || resp_body$nextUri == ""
 }
